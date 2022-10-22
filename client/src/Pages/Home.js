@@ -1,5 +1,7 @@
 import './Home.css'
 import React , {useState,useEffect} from 'react';
+import axios from 'axios';
+
 
 export function Home(){
     const [selectedFile,setSelectedFile]=useState();
@@ -18,17 +20,16 @@ export function Home(){
       if(selectedFile.size >= maxAllowedSize){console.log("bigger")}
       const formData = new FormData();
       formData.append('my_file',selectedFile)
-      console.log(selectedFile)
-      var res = await fetch('/upload_file', {
-          method: 'POST',
-          body: formData,
-        }
-      )
-      res = await res.json()
-      setFilePath = res.file_path
-      setDownloadURL = res.file_path+selectedFile.name
-      
-      //fetch(`/download_file?file_path=${url}`)
+      console.log(formData.get('my_file'))
+      var res = axios.post(`/upload_file`, formData,{
+        headers: {
+          'Content-Type': 'application/json',
+      },
+      })
+      .then(res => {
+        console.log(res);
+        alert(res.data.file_path);
+      })
     }
 
   return (
